@@ -22,7 +22,7 @@ def get_statements(begin, end, database):
         with ZipFile(f'itr_cia_aberta_{year}.zip', 'r') as zip:
             print(' \nExtraindo arquivos...')
             zip.extractall('statements')
-            os.system(f'rm -fr itr_cia_aberta_{year}.zip')
+        os.system(f'rm -fr itr_cia_aberta_{year}.zip')
         
     statements = ['BPA','BPP','DFC_MD','DFC_MI','DMPL','DRA','DRE','DVA']
     statements_type = ['ind', 'con']
@@ -37,7 +37,10 @@ def get_statements(begin, end, database):
                     )
                 os.system(f'rm -fr statements/itr_cia_aberta_{stt}_{stt_tp}_{year}.csv')
                 
-            data.to_sql(name = f'statements/{stt}_{stt_tp}_from_{begin}_to_{end}', con = database, index = False)
+            data.to_sql(
+                name = f'statements/{stt}_{stt_tp}_from_{begin}_to_{end}',
+                con = database, index = False,
+                if_exists='replace')
     
     data = pd.DataFrame()
     for year in range(begin, end +1):
@@ -47,5 +50,8 @@ def get_statements(begin, end, database):
             ])
         os.system(f'rm -fr statements/itr_cia_aberta_{year}.csv')
 
-    data.to_sql(name = f'itr_cia_aberta_from_{begin}_to_{end}', con = database, index = False)      
+    data.to_sql(
+        name = f'itr_cia_aberta_from_{begin}_to_{end}',
+        con = database, index = False,
+        if_exists='replace')      
     return

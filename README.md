@@ -1,4 +1,6 @@
 # Análise de ações brasileiras.
+Antes de qualquer coisa preciso dar os créditos da função de download dos demonstrativos, fiz algumas alterações, porém o código é praticamente o mesmo <a href=''> </a>
+
 
 ## Download
 

@@ -4,9 +4,10 @@ import wget
 import os
 from datetime import date
 from codes.get_statements import *
-from sqlite3 import *
+from sqlalchemy import create_engine
 
-conn = connect('statements/statements.db')
+engine = create_engine('sqlite:///statements_database.db', echo = True)
+conn = engine.connect()
 
 current_year = int(date.today().year)
-get_statements(begin = 2011,end = current_year, database = conn)
+get_statements(begin = 2011,end = 2019, database = conn)
