@@ -1,11 +1,10 @@
-# Análise de ações brasileiras.
+# Fundamental Analysis Dashboard (Brazil)
 Antes de qualquer coisa preciso dar os créditos da função de download dos demonstrativos, fiz algumas alterações, porém o código é praticamente o mesmo <a href=''> </a>
 
 
-## Download
+## Download and set up
 
-Primeramente, é necessário que tenha <a href = "https://git-scm.com/"> Git </a> instalado em sua máquina.
-Comece baixando os arquivos do repositório com:
+The dependencies to it work is <a href = "https://git-scm.com/"> Git </a>
 
 <code> git clone https://github.com/Luiz-Eduardo-de-Lima/br_stocks </code>
 
