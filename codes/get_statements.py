@@ -3,10 +3,10 @@ from zipfile import ZipFile
 import wget
 import os
 from datetime import date
-from codes.get_statements import *
 from sqlite3 import *
 
-def get_statements(begin, end, database):
+def get_statements(begin, end):
+
     '''
     Retorna os balanços históricos das empresas de capital aberto disponíveis na CVM desde 2011.
     '''
@@ -16,42 +16,45 @@ def get_statements(begin, end, database):
         os.system('rm -fr statements')
     except:
         pass
-    
+
+    statements = ['BPA','BPP','DFC_MD','DFC_MI','DMPL','DRA','DRE','DVA']
+    statements_type = ['ind', 'con']
+
     for year in range(begin, end +1):
         wget.download(base_url + f'itr_cia_aberta_{year}.zip')
         with ZipFile(f'itr_cia_aberta_{year}.zip', 'r') as zip:
             print(' \nExtraindo arquivos...')
             zip.extractall('statements')
         os.system(f'rm -fr itr_cia_aberta_{year}.zip')
-        
-    statements = ['BPA','BPP','DFC_MD','DFC_MI','DMPL','DRA','DRE','DVA']
-    statements_type = ['ind', 'con']
 
     for stt in statements:
         for stt_tp in statements_type:
-            data = pd.DataFrame()
+            os.system(f'mkdir statements/{stt}_{stt_tp}')
+            
             for year in range(begin, end +1):
-                data = pd.concat([
-                    data,
-                    pd.read_csv(f'statements/itr_cia_aberta_{stt}_{stt_tp}_{year}.csv', sep = ';', encoding= 'ISO-8859-1', decimal = ',')]
-                    )
-                os.system(f'rm -fr statements/itr_cia_aberta_{stt}_{stt_tp}_{year}.csv')
-                
-            data.to_sql(
-                name = f'statements/{stt}_{stt_tp}_from_{begin}_to_{end}',
-                con = database, index = False,
-                if_exists='replace')
-    
-    data = pd.DataFrame()
-    for year in range(begin, end +1):
-        data = pd.concat([
-            data,
-            pd.read_csv(f'statements/itr_cia_aberta_{year}.csv', sep = ';', encoding= 'ISO-8859-1', decimal = ',')
-            ])
-        os.system(f'rm -fr statements/itr_cia_aberta_{year}.csv')
+                input_df = pd.read_csv(
+                            f'statements/itr_cia_aberta_{stt}_{stt_tp}_{year}.csv',
+                            sep = ';', encoding= 'ISO-8859-1', decimal = ','
+                )
 
-    data.to_sql(
-        name = f'itr_cia_aberta_from_{begin}_to_{end}',
-        con = database, index = False,
-        if_exists='replace')      
+                columns = ['DT_REFER', 'DENOM_CIA', 'CD_CVM', 'CD_CONTA', 'DS_CONTA', 'VL_CONTA']
+                input_df = input_df[columns]
+                
+                input_df.to_csv(f'statements/{stt}_{stt_tp}/{year}.csv', index = False)
+                os.system(f'rm -fr statements/itr_cia_aberta_{stt}_{stt_tp}_{year}.csv')
     return
+
+def stt_to_excel(company_code: str, statement: str):
+    '''
+        Entre o código da CVM da empresa que deseja e o 
+        demonstrativo desejado:
+    '''
+
+    base_dir = f'statements/{statement}'
+    stt_years = os.listdir(base_dir)
+
+    for stt_y in stt_years:
+        pd.read_csv(
+            base_dir + stt_y, encoding = 'ISO-8859-1',
+            sep = ';', decimal = ','
+        )['']
