@@ -35,9 +35,9 @@ def get_statements(begin=int, end=int):
                             sep = ';', encoding= 'ISO-8859-1', decimal = ','
                 )
                 
-                clean = input_df[['DENOM_CIA', 'CD_CVM', '']]
+                clean = input_df[input_df['ORDEM_EXERC'] == 'ÚLTIMO']
                 
-                input_df.to_csv(f'statements/{stt}_{stt_tp}/{year}.csv', index = False)
+                clean.to_csv(f'statements/{stt}_{stt_tp}/{year}.csv', index = False)
                 os.system(f'rm -fr statements/itr_cia_aberta_{stt}_{stt_tp}_{year}.csv')
     return
 
@@ -54,3 +54,4 @@ def get_statements(begin=int, end=int):
         #pd.read_csv(
             #base_dir + stt_y, encoding = 'UTF_8'
         #)['']
+get_statements(2011,2011)
