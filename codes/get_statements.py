@@ -2,8 +2,7 @@ import pandas as pd
 from zipfile import ZipFile
 import wget
 import os
-from datetime import date
-from sqlite3 import *
+
 
 def get_statements(begin, end):
 
@@ -34,11 +33,11 @@ def get_statements(begin, end):
             for year in range(begin, end +1):
                 input_df = pd.read_csv(
                             f'statements/itr_cia_aberta_{stt}_{stt_tp}_{year}.csv',
-                            sep = ';', encoding= 'ISO-8859-1', decimal = ','
+                            sep = ';', encoding= 'ISO-8859-1', decimal = ',', parse_dates='DT_REFER'
                 )
 
-                columns = ['DT_REFER', 'DENOM_CIA', 'CD_CVM', 'CD_CONTA', 'DS_CONTA', 'VL_CONTA']
-                input_df = input_df[columns]
+                #columns = ['DT_REFER', 'DENOM_CIA', 'CD_CVM', 'CD_CONTA', 'DS_CONTA', 'VL_CONTA']
+                #input_df = input_df[columns]
                 
                 input_df.to_csv(f'statements/{stt}_{stt_tp}/{year}.csv', index = False)
                 os.system(f'rm -fr statements/itr_cia_aberta_{stt}_{stt_tp}_{year}.csv')
@@ -55,6 +54,5 @@ def stt_to_excel(company_code: str, statement: str):
 
     for stt_y in stt_years:
         pd.read_csv(
-            base_dir + stt_y, encoding = 'ISO-8859-1',
-            sep = ';', decimal = ','
+            base_dir + stt_y, encoding = 'UTF_8'
         )['']
