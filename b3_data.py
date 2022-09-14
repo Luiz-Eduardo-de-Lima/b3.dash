@@ -41,17 +41,15 @@ def get_statements(begin=int, end=int):
                 os.system(f'rm -fr statements/itr_cia_aberta_{stt}_{stt_tp}_{year}.csv')
     return
 
-#def stt_to_excel(company_code: str, statement: str):
-#    '''
-#        Entre o código da CVM da empresa que deseja e o 
-#        demonstrativo desejado:
-#    '''
+def select_stt(company_code = int, statement = str, begin = int, end = int):
+    out_csv = pd.DataFrame()
+    
+    for year in range(begin, end + 1):
+        path =  f'statements/{statement}/{year}.csv'
+        
+        stt = pd.read_csv(path)
+        stt = stt['CD_CVM' == company_code]
 
-#    base_dir = f'statements/{statement}'
-#    stt_years = os.listdir(base_dir)
-
-    #for stt_y in stt_years:
-        #pd.read_csv(
-            #base_dir + stt_y, encoding = 'UTF_8'
-        #)['']
-get_statements(2011,2011)
+        out_csv = pd.concat([out_csv, stt])
+        
+    return out_csv
