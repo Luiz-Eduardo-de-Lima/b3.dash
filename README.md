@@ -1,5 +1,7 @@
 # B3_data
 
+![Badge em Desenvolvimento](http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge)
+
 Hoje o mercado financeiro ainda é muito dependente dos sistemas clássicos de planilhas. Porém, com a popularização das linguagens de programação o setor exige novas ferramentas para possibilitar essas análise. O B3_data é um projeto criado para possibilitar a análise fundamentalista utilizando a linguagem Python de forma simples.
 
 Futuramente esse projeto servirá de base para uma aplicação mais robusta com interface gráfica, ferramentas de análise, projeções e análise quantitativa.
