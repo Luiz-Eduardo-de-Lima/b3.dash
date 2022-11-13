@@ -105,7 +105,7 @@ def itr_pivoted(company_code: int, statement: str, begin: int, end: int):
 
         dfp_year = pd.read_csv(f'{dfp_main_path}{year}.csv')
         cia_dfp = dfp_year[dfp_year['CD_CVM'] == company_code][columns]
-        cia_dfp['DT_REFER'] = f'Fechamento {year}'
+        cia_dfp['DT_REFER'].map({f'{year}/12/31': f'Fechamento {year}'})
         del dfp_year
 
         # Concatenando Demonstrativos
