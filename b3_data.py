@@ -90,22 +90,28 @@ def dfp_pivoted(company_code: int, statement: str, begin: int, end: int):
     return pd.pivot_table(output_stt, values = 'VL_CONTA',  columns = 'DT_REFER', index = ['CD_CONTA','DS_CONTA'])
 
 def itr_pivoted(company_code: int, statement: str, begin: int, end: int):
-    columns: list = ['DT_REFER', 'CD_CONTA', 'DS_CONTA', 'VL_CONTA']
-    jointed_stt = pd.DataFrame(columns = columns)
-    itr_by_year = []
-    for year in range(begin,end +1):
-        itr = pd.read_csv(f'statements/itr/{statement}/{year}.csv')
-        comp_itr = itr[itr['CD_CVM'] == company_code][columns]
-        del itr
+    '''
+    This function the pivoted DFP statement
+    '''
+    itr_main_path = f'statements/itr/{statement}/'
+    dfp_main_path = f'statements/dfp/{statement}/'
+    columns = ['DT_REFER', 'CD_CONTA', 'DS_CONTA', 'VL_CONTA']
+    jointed = pd.DataFrame(columns=columns)
 
-        dfp = pd.read_csv(f'statements/dfp/{statement}/{year}.csv')[columns]
-        comp_dfp = dfp[dfp['CD_CVM'] == company_code][columns]
-        del dfp
-        
-        comp_dfp['VL_CONTA'] = dfp['VL_CONTA'] - comp_itr.groupby('CD_CONTA', axis = 1).sum()['VL_CONTA']
+    for year in range(begin, end +1):
+        itr_year = pd.read_csv(f'{itr_main_path}{year}.csv')
+        cia_itr = itr_year[itr_year['CD_CVM'] == company_code][columns]
+        del itr_year
 
-        itr_by_year.append(pd.concat([itr,dfp]))
+        dfp_year = pd.read_csv(f'{dfp_main_path}{year}.csv')
+        cia_dfp = dfp_year[dfp_year['CD_CVM'] == company_code][columns]
+        cia_dfp['DT_REFER'] = f'Fechamento {year}'
+        del dfp_year
 
-    jointed_stt = pd.concat(itr_by_year)
-    return pd.pivot_table(jointed_stt, values = 'VL_CONTA',  columns = 'DT_REFER', index = ['CD_CONTA','DS_CONTA'])
+        # Concatenando Demonstrativos
+        year_full_statement = pd.concat([cia_itr,cia_dfp])
+        del cia_dfp
+        del cia_itr
 
+        jointed = pd.concat([jointed, year_full_statement])
+    return pd.pivot_table(jointed, values = 'VL_CONTA',  columns = 'DT_REFER', index = ['CD_CONTA','DS_CONTA'])
