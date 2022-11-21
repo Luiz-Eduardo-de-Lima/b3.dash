@@ -3,6 +3,39 @@ from zipfile import ZipFile
 import wget
 import os
 
+def download(report: str, begin: int, end:int):
+    '''
+    Baixa as DFP's (Demonstrações Financeiras Padronizadas) do site da CVM.
+    Relatórios disponíveis a partir de 2011.
+    '''
+
+    base_url = f'http://dados.cvm.gov.br/dados/CIA_ABERTA/DOC/{report.upper()}/DADOS/'
+    try: os.system(f'rm -fr statements/{report}')
+    except: pass
+
+    statements = ['BPA','BPP','DFC_MD','DFC_MI','DMPL','DRA','DRE','DVA']
+    statements_type = ['ind', 'con']
+
+    for year in range(begin, end +1):
+        wget.download(base_url + f'{report}_cia_aberta_{year}.zip')
+        with ZipFile(f'{report}_cia_aberta_{year}.zip', 'r') as zip:
+            print(' \nExtraindo arquivos...')
+            zip.extractall(f'statements/{report}')
+        os.system(f'rm -fr dfp_cia_aberta_{year}.zip')
+
+    for stt in statements:
+        for stt_tp in statements_type:
+            os.system(f'mkdir statements/{report}/{stt}_{stt_tp}')
+            
+            for year in range(begin, end +1):
+                input_df = pd.read_csv(f'statements/{report}/{report}_cia_aberta_{stt}_{stt_tp}_{year}.csv',sep = ';', encoding= 'ISO-8859-1', decimal = ',')
+                clean = input_df[input_df['ORDEM_EXERC'] == 'ÚLTIMO']
+                
+                clean.to_csv(f'statements/{report}/{stt}_{stt_tp}/{year}.csv', index = False)
+                os.system(f'rm -fr statements/{report}/{report}_cia_aberta_{stt}_{stt_tp}_{year}.csv')
+    return
+
+
 def dfp_download(begin: int, end: int):
 
     '''
