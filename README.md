@@ -16,7 +16,7 @@ Fonte dos dados: https://dados.cvm.gov.br/
 - [ ] Exportação demonstrativos pivotados em .xlsx:
       - [X] Demonstrações Financeira Padronizadas
       - [ ] Informação Trimestrais 
-- [ ] Histórico das contas
+- [X] Histórico das contas
 - [ ] Cálculo de indicadores fundamentalistas (P/L, Margem Líquida, ROE, ROIC, etc)
 - [ ] Métrica para fluxo de caixa descontado (K<sub>e</sub>, K<sub>d</sub>, Wacc, etc)
 - [ ] Fluxo de caixa descontado
