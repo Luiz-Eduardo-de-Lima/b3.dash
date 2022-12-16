@@ -5,8 +5,14 @@ import os
 
 def download(report: str, begin: int, end:int):
     '''
-    Baixa as DFP's (Demonstrações Financeiras Padronizadas) do site da CVM.
-    Relatórios disponíveis a partir de 2011.
+    This function is download both reports from dados.cvm.gov.br/data/CIA_ABERTA/DOC/
+
+        report: 'dfp' for yearly reports
+                'itr' for quarterly reports
+
+        begin: initial year
+
+        end: final year
     '''
 
     base_url = f'http://dados.cvm.gov.br/dados/CIA_ABERTA/DOC/{report.upper()}/DADOS/'
@@ -37,7 +43,21 @@ def download(report: str, begin: int, end:int):
 
 def dfp_pivoted(company_code: int, statement: str, begin: int, end: int):
     '''
-    This function the pivoted DFP statement
+    This function returns the pivoted company statement from dfp report
+
+        company_code: CVM code for the wanted company, can be find at b3 website
+
+        statement:  'DRE_con' or 'DRE_ind' for income report
+                    'BPA_con' or 'BPA_ind' for balance sheet (Assets)
+                    'BPP_con' or 'BPP_con' for balance sheet (Liabilities)
+                    'DCF_MD_con' or 'DFC_MD_ind' for cash flow (indirect method)
+                    'DFC_MI_con' or 'DFC_MD_ind' for cash flow (direct method)
+                    'DVA_con' or 'DVA_ind' for value added report
+                    'DMPL_con' or 'DMPL ind' for statement of retained earnings
+
+        begin: initial year
+
+        end: final year
     '''
     main_path = f'statements/dfp/{statement}/'
     columns = ['DT_REFER', 'CD_CONTA', 'DS_CONTA', 'VL_CONTA']
@@ -89,32 +109,38 @@ def dfp_pivoted(company_code: int, statement: str, begin: int, end: int):
 #    return pd.pivot_table(jointed, values = 'VL_CONTA',  columns = 'DT_REFER', index = ['CD_CONTA','DS_CONTA']).fillna(0)
 
 
-def revenue_hist(frequency:str, begin: int, end: int, company_code: int, stt_type: str):
+def account_hist(company_code: int, statement: str, account: str, frequency: str, begin: int, end: int):
     '''
         Warning!!!
-        Ainda não funciona para dados trimestrias
+        Still doesn't work for quarterly reports
+        
+        company_code: CVM code for the wanted company, can be find at the B3 website
+
+        statement:  'DRE_con' or 'DRE_ind' for income report
+                    'BPA_con' or 'BPA_ind' for balance sheet (Assets)
+                    'BPP_con' or 'BPP_con' for balance sheet (Liabilities)
+                    'DCF_MD_con' or 'DFC_MD_ind' for cash flow (indirect method)
+                    'DFC_MI_con' or 'DFC_MD_ind' for cash flow (direct method)
+                    'DVA_con' or 'DVA_ind' for value added report
+                    'DMPL_con' or 'DMPL ind' for statement of retained earnings report
+
+        account: account number 
 
         frequency: 'yearly' para dados anuais
                    'quarterly' para dados trimestrias
 
-        begin: ano inicial
-        
-        end: ano final
-
-        company_code: código CVM da cia
-
-        stt_type: 'con' para demonstrativos consolidados
-                  'ind' para demonstrativos individuais
+        begin: initial year
+        end: final year
     '''
 
     if frequency == 'yearly':
-        statement = dfp_pivoted(
+        company_statement = dfp_pivoted(
             company_code = company_code,
-            statement = f'DRE_{stt_type}',
+            statement = statement
             begin = begin, end = end
             )
-    elif frequency == 'quarterly': statement = itr_pivoted()
+    elif frequency == 'quarterly': company_statement = itr_pivoted()
 
-    return statement.loc['3.01']
+    return statement.loc[account]
 
-    
+
