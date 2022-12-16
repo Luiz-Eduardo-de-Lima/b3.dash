@@ -89,7 +89,7 @@ def dfp_pivoted(company_code: int, statement: str, begin: int, end: int):
 #    return pd.pivot_table(jointed, values = 'VL_CONTA',  columns = 'DT_REFER', index = ['CD_CONTA','DS_CONTA']).fillna(0)
 
 
-def revenue_hist(frequency:str, begin: int, end: int, company_code: int):
+def revenue_hist(frequency:str, begin: int, end: int, company_code: int, stt_type: str):
     '''
         Warning!!!
         Ainda não funciona para dados trimestrias
@@ -111,11 +111,10 @@ def revenue_hist(frequency:str, begin: int, end: int, company_code: int):
         statement = dfp_pivoted(
             company_code = company_code,
             statement = f'DRE_{stt_type}',
-            begin = begin, end = end,
-            to_excel = False
+            begin = begin, end = end
             )
     elif frequency == 'quarterly': statement = itr_pivoted()
 
-    return statement.iloc['3.01']
+    return statement.loc['3.01']
 
     
