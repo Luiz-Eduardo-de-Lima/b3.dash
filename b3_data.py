@@ -70,7 +70,7 @@ def dfp_pivoted(company_code: int, statement: str, begin: int, end: int):
         company_statement['DT_REFER'] = str(year)
 
         output_stt = pd.concat([output_stt, company_statement])
-    return pd.pivot_table(output_stt, values = 'VL_CONTA',  columns = 'DT_REFER', index = ['CD_CONTA','DS_CONTA'])
+    return pd.pivot_table(output_stt, values = 'VL_CONTA',  columns = 'DT_REFER', index = ['CD_CONTA','DS_CONTA']).fillna(0)
 
 
 #def itr_pivoted(company_code: int, statement: str, begin: int, end: int):
@@ -136,11 +136,54 @@ def account_hist(company_code: int, statement: str, account: str, frequency: str
     if frequency == 'yearly':
         company_statement = dfp_pivoted(
             company_code = company_code,
-            statement = statement
+            statement = statement,
             begin = begin, end = end
             )
     elif frequency == 'quarterly': company_statement = itr_pivoted()
 
-    return statement.loc[account]
+    return company_statement.loc[account]
 
+class Company:
+    def __init__(self, company_code: int, begin: int, end: int, bookkeping = None):
+        self.company_code = company_code
+        self.begin = begin
+        self.frequency = 'yearly'
+        self.end = end
+        if bookkeping == None: self.bookkeping = 'ind'
+        else: self.bookkeping = bookkeping
+    
+    # Method for pivoted yearly reports
+    def DRE(self):
+        return dfp_pivoted(self.company_code, statement = f'DRE_{self.bookkeping}', begin = self.begin, end = self.end)
+    def BP_Ativo(self):
+        return dfp_pivoted(self.company_code, statement = f'BPA_{self.bookkeping}', begin = self.begin, end = self.end)
+    def BP_Passivo(self):
+        return dfp_pivoted(self.company_code, statement = f'BPP_{self.bookkeping}', begin = self.begin, end = self.end) 
+    def DFC_MD(self):
+        return dfp_pivoted(self.company_code, statement = f'DFC_MD_{self.bookkeping}', begin = self.begin, end = self.end) 
+    def DFC_MI(self):
+        return dfp_pivoted(self.company_code, statement = f'DFC_MI_{self.bookkeping}', begin = self.begin, end = self.end) 
+ 
 
+class Historic(Company):
+    '''
+       The class historic followed by its methods returns the historic values of each account. I've selected only the more relevant to a simples analysis
+       If you need an specific account use the function account_hist()
+    '''
+    def __init__(self, company_code: int, begin: int, end: int, bookkeping = None):
+        super().__self__(company_code, begin, end, bookkeping)
+
+    ### Income Report Accounts
+    def gross_renevue(self):
+        return account_hist(self.company_code, f'DRE_{self.bookkeping}', account = '3.01', frequency = self.frequency, begin = self.begin, end = self.begin)
+    def net_revenue(self):
+        return account_hist(self.company_code, f'DRE_{self.bookkeping}', account = '3.03', frequency = self.frequency, begin = self.begin, end = self.begin)
+    def ebitda(self):
+        return account_hist(self.company_code, f'DRE_{self.bookkeping}', account = '3.05', frequency = self.frequency, begin = self.begin, end = self.begin)
+    def ebit(self):
+        return account_hist(self.company_code, f'DRE_{self.bookkeping}', account = '3.07', frequency = self.frequency, begin = self.begin, end = self.begin)
+    def profit(self):
+        return account_hist(self.company_code, f'DRE_{self.bookkeping}', account = '3.09', frequency = self.frequency, begin = self.begin, end = self.begin)
+
+# ÁREA DE TESTES
+print(type(Historic))
