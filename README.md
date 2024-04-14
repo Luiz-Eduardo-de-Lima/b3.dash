@@ -12,10 +12,10 @@ Fonte dos dados: https://dados.cvm.gov.br/
 
 - [x] Download das DFP'S (Demonstrações Financeiras Padronizadas)
 - [X] Download das ITR'S (Relatório de Informações Trimestrais)
-- [ ] Ajuste 4º trimestre (leia a explicação abaixo)
-- [ ] Exportação demonstrativos pivotados em .xlsx:
-      - [X] Demonstrações Financeira Padronizadas
-      - [ ] Informação Trimestrais 
+- [X] Ajuste 4º trimestre (leia a explicação abaixo)
+- [X] Exportação demonstrativos pivotados em .xlsx:
+- [X] Demonstrações Financeira Padronizadas
+- [X] Informação Trimestrais 
 - [X] Histórico das contas
 - [ ] Cálculo de indicadores fundamentalistas (P/L, Margem Líquida, ROE, ROIC, etc)
 - [ ] Métrica para fluxo de caixa descontado (K<sub>e</sub>, K<sub>d</sub>, Wacc, etc)
